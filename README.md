@@ -21,14 +21,13 @@ You have to provide an __API key__ in order to use YouTube API. Path: `./apiKey.
 
 ### Spotify
 
-You have to provide __clientId__, __clientSecret__, __token__. Path: `./config.json`
+You have to provide __clientId__, __clientSecret__. Path: `./config.json`
 
 ```json
 {
     ...,
     "clientId":"<clientId>",
-    "clientSecret":"<clientSecret>",
-    "token":"<token>"
+    "clientSecret":"<clientSecret>"
 }
 ```
 
