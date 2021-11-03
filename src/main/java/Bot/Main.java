@@ -16,20 +16,12 @@ public class Main {
 	static YouTubeAPI youtube;
 	public static MySQL sql;
 	
-	// Main: Setting up configuration files, initializing Discord JDA and starts command line
+	// Main: Setting up configuration files, initializing Discord JDA, YouTube, Spotify, SQL, Webserver and starts command line
 	
 	public static void main(String[] args) throws LoginException, InterruptedException {
 		//WebServer.secureServer();
-		
 		sql = new MySQL();
-		
-		try {
-			sql.connect();
-			System.out.println("Successfully connected to SQL!");
-		} catch (Exception e1) {
-			System.out.println("Error connecting to SQL!");
-			//e1.printStackTrace();
-		}
+		sql.connect();
 		
 		config = new Config();
 		Spotify.initApi(config.getClienId(), config.getClientSecret());

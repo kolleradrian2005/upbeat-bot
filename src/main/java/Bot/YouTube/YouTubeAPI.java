@@ -15,6 +15,8 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
+import Bot.References;
+
 public class YouTubeAPI {
 	
 	private final String apiKeyLocation = "apiKey.txt";
@@ -29,11 +31,11 @@ public class YouTubeAPI {
 			try {
 				apiKeyFile.createNewFile();
 			} catch (IOException e) {
-				System.out.println("Could not create file: " + apiKeyLocation);
+				print("Could not create file: " + apiKeyLocation);
 				e.printStackTrace();
 				return this;
 			}
-			System.out.println("Please privide a YouTube api key here: " + apiKeyLocation);
+			print("Please privide a YouTube api key here: " + apiKeyLocation);
 			return this;
 		}
 		// Read from file
@@ -43,19 +45,19 @@ public class YouTubeAPI {
 			//Check if the key matches Google YouTube API Key pattern
 			String pattern = "AIza[0-9A-Za-z\\\\\\\\-_]{35}";
 			if (text.matches(pattern)) {
-				System.out.println("Found YouTube API key!");
+				print("Found YouTube API key!");
 				apiKey = text; // Save key to variable
 				return this;
 			} else {
-				System.out.println("Please privide a valid YouTube api key here: " + apiKeyLocation);
+				print("Please privide a valid YouTube api key here: " + apiKeyLocation);
 				return this;
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("Could not open file: " + apiKeyLocation);
+			print("Could not open file: " + apiKeyLocation);
 			e.printStackTrace();
 			return this;
 		} catch (IOException e) {
-			System.out.println("Could not read file: " + apiKeyLocation);
+			print("Could not read file: " + apiKeyLocation);
 			e.printStackTrace();
 		}
 		return this;
@@ -86,7 +88,7 @@ public class YouTubeAPI {
 	
 	// Read string from reader
 	
-	private static String readAll(Reader rd) throws IOException {
+	private String readAll(Reader rd) throws IOException {
 	    StringBuilder sb = new StringBuilder();
 	    int cp;
 	    while ((cp = rd.read()) != -1) {
@@ -97,14 +99,14 @@ public class YouTubeAPI {
 	
 	// Fetch JSON from URL
 
-	public static JSONObject readJsonFromUrl(String url) throws Exception {
+	public JSONObject readJsonFromUrl(String url) throws Exception {
 		URL URL = new URL(url);
 	    HttpURLConnection connection = (HttpURLConnection)URL.openConnection();
 	    connection.setRequestMethod("GET");
 	    connection.connect();
 	    int statusCode = connection.getResponseCode();
 	    if (statusCode != 200)  {
-	    	System.out.println("Statuscode: " + statusCode + " ");
+	    	print("Statuscode: " + statusCode + " ");
 	    	throw new Exception();
     	}
 	    InputStream is;
@@ -117,5 +119,11 @@ public class YouTubeAPI {
 	    } finally {
 	      is.close();
 	    }
+	}
+
+	// Logging
+
+	private void print(String msg) {
+		System.out.println(References.youtubePrefix + msg);
 	}
 }

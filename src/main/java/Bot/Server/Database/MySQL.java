@@ -8,18 +8,28 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import Bot.References;
+
 public class MySQL {
 	
 	Statement statement;
 	
 	// Connect to database
 	
-	public void connect() throws SQLException, ClassNotFoundException {
-		Connection db = DriverManager.getConnection("jdbc:mysql://localhost:3306/UpBeat",
-				"admin",
-				"password"
-				);
-		statement = db.createStatement();
+	public void connect() {
+
+		Connection db;
+		try {
+			db = DriverManager.getConnection("jdbc:mysql://localhost:3306/UpBeat",
+					"admin",
+					"password"
+					);
+			statement = db.createStatement();
+			print("Successfully connected to SQL!");
+		} catch (Exception e1) {
+			print("Error connecting to SQL!");
+		}
+		
 	}
 	
 	// Check in database if username & password has a match
@@ -64,5 +74,11 @@ public class MySQL {
 			}
 		} catch (SQLException e) {}
 		return false;
+	}
+
+	// Logging
+
+	private void print(Object msg) {
+		System.out.println(References.sqlPrefix + msg);
 	}
 }

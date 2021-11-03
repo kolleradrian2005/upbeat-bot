@@ -6,6 +6,8 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.hc.core5.http.ParseException;
 
+import Bot.References;
+
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
@@ -25,7 +27,6 @@ public class Spotify {
 	// Initialize Spotify API
 	
 	public static SpotifyApi initApi(String clientId, String clientSecret) {
-		
 		spotifyApi = new SpotifyApi
 				.Builder()
 			    .setClientId(clientId)
@@ -34,39 +35,44 @@ public class Spotify {
 		clientCredentialsRequest = spotifyApi
 				.clientCredentials()
 				.build();
-		//clientCredentials_Sync();
 		clientCredentials_Async();
 		return spotifyApi;
 	}
 	
 	public static void clientCredentials_Sync() {
 	    try {
-	      final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
+			final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
 
-	      // Set access token for further "spotifyApi" object usage
-	      spotifyApi.setAccessToken(clientCredentials.getAccessToken());
+			// Set access token for further "spotifyApi" object usage
+			spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-	      System.out.println("Expires in: " + clientCredentials.getExpiresIn() + " seconds.");
+			print("Expires in: " + clientCredentials.getExpiresIn() + " seconds.");
 	    } catch (IOException | SpotifyWebApiException | ParseException e) {
-	      System.out.println("Error: " + e.getMessage());
+			print("Error: " + e.getMessage());
 	    }
 	}
-	private static void clientCredentials_Async() {
-		    try {
-		      final CompletableFuture<ClientCredentials> clientCredentialsFuture = clientCredentialsRequest.executeAsync();
+	public static void clientCredentials_Async() {
+		try {
+			final CompletableFuture<ClientCredentials> clientCredentialsFuture = clientCredentialsRequest.executeAsync();
 
-		      // Thread free to do other tasks...
+			// Thread free to do other tasks...
 
-		      final ClientCredentials clientCredentials = clientCredentialsFuture.join();
+			final ClientCredentials clientCredentials = clientCredentialsFuture.join();
 
-		      // Set access token for further "spotifyApi" object usage
-		      spotifyApi.setAccessToken(clientCredentials.getAccessToken());
+			// Set access token for further "spotifyApi" object usage
+			spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-		      System.out.println("Expires in: " + clientCredentials.getExpiresIn() + " seconds.");
-		    } catch (CompletionException e) {
-		      System.out.println("Error: " + e.getCause().getMessage());
-		    } catch (CancellationException e) {
-		      System.out.println("Async operation cancelled.");
-		    }
-		  }
+			print("Expires in: " + clientCredentials.getExpiresIn() + " seconds.");
+		} catch (CompletionException e) {
+			print("Error: " + e.getCause().getMessage());
+		} catch (CancellationException e) {
+			print("Async operation cancelled.");
+		}
+	}
+
+	// Logging
+
+	private static void print(String msg) {
+		System.out.println(References.spotifyPrefix + msg);
+	}
 }

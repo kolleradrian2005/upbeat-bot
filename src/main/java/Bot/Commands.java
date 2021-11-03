@@ -71,30 +71,6 @@ public class Commands {
         	loopCommand(event);
 	}
 	
-	// Handle commands with reaction
-	
-	public static void handleReactionCommand(MessageReactionAddEvent event) {
-		
-		String unicode = event.getReactionEmote().toString();
-		
-		if (unicode.equals("RE:U+23f8")) { // PAUSE
-    		Bot.AudioManager manager = Bot.AudioManager.get();
-        	GuildMusicManager musicManager = manager.getGuildMusicManager(event.getGuild());
-        	musicManager.player.setPaused(true);
-        	InitManager.handleEmotes(event.getGuild().getIdLong(), musicManager.player.getPlayingTrack() != null);
-    	} else if (unicode.equals("RE:U+25b6")){ // CONTINUE
-    		Bot.AudioManager manager = Bot.AudioManager.get();
-        	GuildMusicManager musicManager = manager.getGuildMusicManager(event.getGuild());
-        	musicManager.player.setPaused(false);
-        	InitManager.handleEmotes(event.getGuild().getIdLong(), musicManager.player.getPlayingTrack() != null);
-    	} else if (unicode.equals("RE:U+23e9")){ // SKIP
-    		Bot.AudioManager manager = Bot.AudioManager.get();
-        	GuildMusicManager musicManager = manager.getGuildMusicManager(event.getGuild());
-        	musicManager.scheduler.nextTrack();
-        	InitManager.handleEmotes(event.getGuild().getIdLong(), musicManager.player.getPlayingTrack() != null);
-    	}
-	}
-	
 	// Ping
 	
 	public static void pingCommand(MessageReceivedEvent event) {

@@ -144,9 +144,9 @@ public class InitManager {
 		return new Thread() {
 			public void run(){
 		      while (true) {
-		    	  AudioManager manager = AudioManager.get();
-	    		  AudioTrack currentTrack = manager.getGuildMusicManager(Main.bot.getGuildById(guildId)).scheduler.getCurrentTrack();
-	    		  if (currentTrack != null)
+		    	  GuildMusicManager manager = AudioManager.get().getGuildMusicManager(Main.bot.getGuildById(guildId));
+	    		  AudioTrack currentTrack = manager.scheduler.getCurrentTrack();
+	    		  if (manager.isPlaying())
 	    			  setTime(guildId, currentTrack.getPosition(), currentTrack.getDuration());
 		    	  try {
 					Thread.sleep(2000);
@@ -206,8 +206,11 @@ public class InitManager {
 	
 	// Handle reactions when track added or removed
 	
-	public static void handleEmotes(long guildId, boolean hasTrack) {
+	public static void handleButtons(long guildId) {
 		
+		GuildMusicManager guildMusicManager = AudioManager.get().getGuildMusicManager(Main.bot.getGuildById(guildId));
+		boolean hasTrack = guildMusicManager.isPlaying();
+
 		Message	msg = getMessage(guildId);
 		if (msg == null) return;
 		try {
@@ -220,7 +223,6 @@ public class InitManager {
 		
 		Collection<Component> comps = new ArrayList<Component>();
 		
-		//System.out.println(guildId + "pause");
 		if (hasTrack) {
 			if (!paused)
 				comps.add(Button.secondary(guildId + "pause", Emoji.fromUnicode("U+23F8")));
@@ -234,23 +236,13 @@ public class InitManager {
 			msg.editMessage(getMessage(guildId)).setActionRows(ActionRow.of(comps)).queue();
 		else
 			msg.editMessage(getMessage(guildId)).setActionRows().queue();
-		/*try {
-			if (hasTrack)
-				if (!paused)
-					msg.addReaction("U+23F8").queue(); // PAUSE
-				else	
-					msg.addReaction("U+25B6").queue(); // PLAY
-			
-			if (musicManager.scheduler.getQueue().size() != 0) {
-				msg.addReaction("U+23E9").queue(); // SKIP
-			}
-		} catch (Exception ex) {}*/
 	}
 	
 	// Set track on embed
 	
 	public static void setTrack(long guildId, @Nullable AudioTrack track) {
-		handleUpdate(guildId, track != null); // Start or stop tracking time
+		boolean isPlaying = track != null;
+		handleUpdate(guildId, isPlaying); // Start or stop tracking time
 		EmbedBuilder e = getEmbedBuilder(guildId);
 		if (e == null) return;
 		List<MessageEmbed.Field> fields = new ArrayList<MessageEmbed.Field>();
@@ -283,7 +275,7 @@ public class InitManager {
 		
 		// Fill the board
 		
-		if (track != null) {
+		if (isPlaying) {
 			String durationStr = Helper.convertTimeToString(track.getDuration());
 			fields.add(new MessageEmbed.Field("Currently playing", track.getInfo().title + " ", false));
 			fields.add(new MessageEmbed.Field("Url", track.getInfo().uri + " ", false));
@@ -310,7 +302,7 @@ public class InitManager {
 		try {
 			msg.editMessageEmbeds(built).queue(response -> {
 				setMessage(guildId, response);
-				handleEmotes(guildId, track != null);
+				handleButtons(guildId);
 			});
 		} catch (Exception ex) {
 			messages.remove(guildId);

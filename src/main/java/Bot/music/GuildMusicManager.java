@@ -13,7 +13,9 @@ public class GuildMusicManager {
     scheduler = new TrackScheduler(player, guildId);
     player.addListener(scheduler);
   }
-  
+  public boolean isPlaying() {
+    return player.getPlayingTrack() != null;
+  }
   public AudioPlayerSendHandler getSendHandler() {
     return new AudioPlayerSendHandler(player);
   }

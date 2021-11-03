@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+
+import net.dv8tion.jda.api.entities.Guild;
+
 public class CommandLine {
 	
 	// Constructor
@@ -40,20 +44,21 @@ public class CommandLine {
 	// Run command
 	
 	private void runCommand(String command, List<String> args) {
-		
 		switch (command.toLowerCase()) {
 			case "stop":
-				System.out.println("Stopping bot...");
+				print(References.botPrefix + "Stopping bot...");
 				System.exit(0);
 				return;
 			case "help":
 				print("");
 				print("--->");
 				print("");
-				print("Here are the following commands:");
+				print("Here is the list of the commands:");
 				print("");
 				print("stop              - Terminates the bot.");
 				print("volume <amount>   - Sets the volume of the bot on all servers.");
+				print("reload            - Reloads the bot.");
+				print("info              - Displays information about the music player (servers - tracks).");
 				print("");
 				print("--->");
 				return;
@@ -75,22 +80,32 @@ public class CommandLine {
 				Listener.targetVolume = amount;
 				return;
 			case "reload":
-			try {
-				Main.reload();
-			} catch (Exception e) {
-				print("Failed to reload");
-				e.printStackTrace();
-			}
+				try {
+					Main.reload();
+				} catch (Exception e) {
+					print("Failed to reload");
+					e.printStackTrace();
+				}
+				return;
+			case "info":
+				print("Information about the music player: ");
+				for (Guild guild : Main.bot.getGuilds()) {
+					AudioTrack currentTrack = AudioManager.get().getGuildMusicManager(guild).player.getPlayingTrack();
+					if (currentTrack == null)
+						print("  " + guild.getName());
+					else
+						print("  " + guild.getName() + " - " + currentTrack.getInfo().title + " (" + Helper.convertTimeToString(currentTrack.getPosition()) + " / " + Helper.convertTimeToString(currentTrack.getDuration()) + ") " + (AudioManager.get().getGuildMusicManager(guild).player.isPaused() ? "PAUSED" : ""));
+				}
 				return;
 			default:
-				System.out.println("Unknown command");
+				print("Unknown command");
 				return;
 		}
 	}
 	
-	// Print text to command line
+	// Logging
 	
-	public void print(String msg) {
+	private void print(String msg) {
 		System.out.println(msg);
 	}
 }

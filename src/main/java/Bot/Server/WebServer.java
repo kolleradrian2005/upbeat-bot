@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import Bot.AudioManager;
 import Bot.Main;
+import Bot.References;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class WebServer {
@@ -162,7 +163,7 @@ public class WebServer {
 			}
 			AudioManager manager = AudioManager.get();
 			
-			boolean playing = manager.getGuildMusicManager(guild).scheduler.getCurrentTrack() != null;
+			boolean playing = manager.getGuildMusicManager(guild).isPlaying();
 			content.put("statuscode", 200);
 			content.put("playing", playing);
 			if (playing) {
@@ -362,6 +363,6 @@ public class WebServer {
 	// Log to console
 	
 	private static void print(Object msg) {
-		System.out.println(msg);
+		System.out.println(References.webPrefix + msg);
 	}
 }

@@ -51,6 +51,8 @@ public class Helper {
         }
     }
 	
+	/* TODO: Regular expressions below */
+
 	// Determine whether String is instance of a YouTube link
 	
 	public static boolean isYoutubeLink(String input) {
@@ -63,9 +65,13 @@ public class Helper {
 		return input.contains("spotify.com");
     }
 
+	// Determine whether String is instance of a Twitch link
+
 	public static boolean isTwitchLink(String input) {
 		return input.contains("twitch.tv");
 	}
+
+	// Determine whether String is instance of a SoundCloud link
 
 	public static boolean isSoundCloudLink(String input) {
 		return input.contains("soundcloud.com");

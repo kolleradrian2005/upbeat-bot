@@ -302,7 +302,6 @@ public class AudioManager {
 			@Override
 			public void noMatches() {
 				String inp = input;
-				System.out.println(input.substring(0, 10));
 				if(input.substring(0, 10).equals("ytsearch: ")) {
 					inp = input.substring(10);
 				}

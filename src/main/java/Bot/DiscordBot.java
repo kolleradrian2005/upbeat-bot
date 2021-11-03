@@ -25,7 +25,7 @@ public class DiscordBot {
 		try {
 			initBot();
 		} catch (LoginException e) {
-			System.out.println("Authorization error. Please provide a valid token in config.json then reload the bot!");
+			print("Authorization error. Please provide a valid token in config.json then reload the bot!");
 			return;
 		}
 		start();
@@ -38,7 +38,7 @@ public class DiscordBot {
 		try {
 			initBot();
 		} catch (LoginException e) {
-			System.out.println("Authorization error. Please provide a valid token in config.json then reload the bot!");
+			print("Authorization error. Please provide a valid token in config.json then reload the bot!");
 			return null;
 		}
 		start();
@@ -65,7 +65,7 @@ public class DiscordBot {
 	// Stopping connection
 	
 	void stop() {
-		System.out.print("Shutting down!");
+		print("Shutting down!");
 		if (jda == null) return;
 		for (Object listener : jda.getRegisteredListeners()) {
 			jda.removeEventListener(listener);
@@ -89,6 +89,12 @@ public class DiscordBot {
 		return this;
 	}
 	
+	// Logging
+
+	private void print(Object msg) {
+		System.out.println(References.botPrefix + msg);
+	}
+
 	public Guild getGuildById(long id) {
 		return jda.getGuildById(id);
 	}
@@ -100,12 +106,12 @@ public class DiscordBot {
 	public List<Guild> getGuilds() {
 		return jda.getGuilds();
 	}
+
 	public TextChannel getTextChannel(long id) {
 		return jda.getTextChannelById(id);
 	}
-	
+
 	public Emote getEmote(String unicode) {
 		return null;
-	}
-		
+	}	
 }

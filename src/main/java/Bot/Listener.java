@@ -20,15 +20,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Listener extends ListenerAdapter {
 	
-	static String prefix = "."; // Determines the prefix of commands
-	public static int targetVolume = 20; // Determines default volume
+	public static String prefix = References.defaultPrefix; // Determines the prefix of commands
+	public static int targetVolume = References.defaultTargetVolume; // Determines default volume
 	
 	// Handle incoming messages
 	
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
-    	
     	Message msg = event.getMessage();
         
         if (InitManager.getInitChannels().contains(event.getTextChannel()) && !InitManager.isInit(msg)) {
@@ -54,12 +53,6 @@ public class Listener extends ListenerAdapter {
     	
         if (!InitManager.isInit(msg)) // Return if reaction is not on embed board
         	return;
-        
-        // Run command for each reaction if not sent by self
-        
-        if (event.getUser() != Main.bot.getSelf()) {
-        	Commands.handleReactionCommand(event);
-        }
         
         // Remove all reactions if not sent by self
         
@@ -102,19 +95,19 @@ public class Listener extends ListenerAdapter {
     		GuildMusicManager guildMusicManager = manager.getGuildMusicManager(Main.bot.getGuildById(guildId));
     		guildMusicManager.player.setPaused(false);
     		event.deferEdit().submit();
-    		InitManager.handleEmotes(guildId, guildMusicManager.scheduler.getCurrentTrack() != null);
+    		InitManager.handleButtons(guildId);
     	} else if (buttonId.contains("pause")) {
     		Long guildId = Long.parseLong(buttonId.substring(0, buttonId.length()-5));
     		GuildMusicManager guildMusicManager = manager.getGuildMusicManager(Main.bot.getGuildById(guildId));
     		guildMusicManager.player.setPaused(true);
     		event.deferEdit().submit();
-    		InitManager.handleEmotes(guildId, guildMusicManager.scheduler.getCurrentTrack() != null);
+    		InitManager.handleButtons(guildId);
     	} else if (buttonId.contains("skip")) {
     		Long guildId = Long.parseLong(buttonId.substring(0, buttonId.length()-4));
     		GuildMusicManager guildMusicManager = manager.getGuildMusicManager(Main.bot.getGuildById(guildId));
     		guildMusicManager.scheduler.nextTrack();
     		event.deferEdit().submit();
-    		InitManager.handleEmotes(guildId, guildMusicManager.scheduler.getCurrentTrack() != null);
+    		InitManager.handleButtons(guildId);
     	}
     }
     
@@ -125,7 +118,6 @@ public class Listener extends ListenerAdapter {
     {
     	Message initMsg = InitManager.getMessage(event.getGuild().getIdLong());
     	if (initMsg != null && event.getMessageIdLong() == initMsg.getIdLong()) {
-    		
     		InitManager.deleteMessage(event.getGuild().getIdLong());
     	}
     }
@@ -136,10 +128,8 @@ public class Listener extends ListenerAdapter {
 	public void onReady(ReadyEvent event) {
 		Main.disabledchannels = new DisabledChannels();
 		ChatManager.loadDisabledChannel();
-		
 		Main.initchannels = new InitChannels();
 		InitManager.load();
-		
-		System.out.println("Prepare for trouble, make it double!");
+		System.out.println(References.botPrefix + "Prepare for trouble, make it double!");
 	}
 }
